@@ -24,9 +24,7 @@ public class CommandHandler : ICommandHandler
 
     public void Handle(DeleteBlockCommand command, Stream stream)
     {
-        var fileInfo = _repository.ReadFile(command.BlockName);
         _repository.RemoveFile(command.BlockName);
-        _configurationProvider.DecreaseFreeSpace(fileInfo.Length);
         stream.SendBytes(BitConverter.GetBytes(_configurationProvider.GetFreeSpace()));
     }
 
