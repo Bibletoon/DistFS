@@ -9,12 +9,25 @@ public static class StreamExtensions
 {
     public static byte[] AcceptBytes(this Stream stream)
     {
-        byte[] lengthBytes = new byte[4];
-        stream.Read(lengthBytes);
-        int length = BitConverter.ToInt32(lengthBytes);
-        byte[] objectBytes = new byte[length];
-        stream.Read(objectBytes);
-        return objectBytes;
+        byte[] buffer = new byte[512];
+        var bytesRead = 0;
+
+        var headerRead = 0;
+        while (headerRead < 4 && (bytesRead = stream.Read(buffer, headerRead, 4-headerRead)) > 0)
+        {
+            headerRead += bytesRead;
+        }
+
+        var bytesRemaining = BitConverter.ToInt32(buffer);
+
+        var data = new List<byte>();
+        while (bytesRemaining > 0 && (bytesRead = stream.Read(buffer, 0, Math.Min(buffer.Length, bytesRemaining))) != 0)
+        {
+            data.AddRange(buffer.Take(bytesRead));
+            bytesRemaining -= bytesRead;
+        }
+
+        return data.ToArray();
     }
 
     public static void SendBytes(this Stream stream, byte[] array)
