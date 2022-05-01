@@ -32,14 +32,14 @@ public class TcpNodeRunner
         }
     }
 
-    public void ConfigureServices(ServiceCollection collection)
+    private static void ConfigureServices(ServiceCollection collection)
     {
         collection.AddSingleton<INodeConfigurationProvider, NodeConfigurationProvider>();
         collection.AddSingleton<INodeRepository, LocalNodeRepository>();
         collection.AddScoped<ICommandHandler, CommandHandler>();
     }
 
-    public CommandTypeProvider BuildCommandTypeProvider()
+    private static CommandTypeProvider BuildCommandTypeProvider()
     {
         var ctp = new CommandTypeProvider();
         ctp.RegisterCommand<DeleteBlockCommand>()

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using DistFS.Node.Tools.Exceptions;
 using DistFs.Tcp.Common.NodeAbstractions;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -17,7 +18,9 @@ public class NodeConfigurationProvider : INodeConfigurationProvider
             throw new FileNotFoundException("Config file not found");
         }
         
-        _configurationInfo = JsonConvert.DeserializeObject<NodeConfigurationInfo>(File.ReadAllText(ConfigFileName));
+        _configurationInfo = 
+            JsonConvert.DeserializeObject<NodeConfigurationInfo>(File.ReadAllText(ConfigFileName))
+            ?? throw new NodeConfigurationException("Wrong configuration format");
     }
     
     public NodeConfigurationInfo GetConfiguration()

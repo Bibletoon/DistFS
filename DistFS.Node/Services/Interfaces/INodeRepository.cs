@@ -3,7 +3,7 @@
 public interface INodeRepository
 {
     FileInfo GetFileInfo(string fileName);
-    public void WriteFile(string fileName, byte[] data);
-    public byte[] ReadFile(string fileName);
-    public void RemoveFile(string fileName);
+    long WriteFile(string fileName, byte[] data);
+    byte[] ReadFile(string fileName);
+    long RemoveFile(string fileName);
 }

@@ -1,8 +1,6 @@
-﻿using System.Text;
-using DistFs.Tcp.Common;
+﻿using DistFs.Tcp.Common;
 using DistFs.Tcp.Common.Dto;
 using DistFs.Tcp.Common.NodeAbstractions;
-using Newtonsoft.Json;
 
 namespace DistFS.Node;
 
@@ -24,7 +22,8 @@ public class CommandHandler : ICommandHandler
 
     public void Handle(DeleteBlockCommand command, Stream stream)
     {
-        _repository.RemoveFile(command.BlockName);
+        var deletedFileLength = _repository.RemoveFile(command.BlockName);
+        _configurationProvider.IncreaseFreeSpace(deletedFileLength);
         stream.SendBytes(BitConverter.GetBytes(_configurationProvider.GetFreeSpace()));
     }
 
@@ -43,7 +42,8 @@ public class CommandHandler : ICommandHandler
 
     public void Handle(WriteBlockCommand command, Stream stream)
     {
-        _repository.WriteFile(command.BlockName, command.Block);
+        var writtenFileLength = _repository.WriteFile(command.BlockName, command.Block);
+        _configurationProvider.DecreaseFreeSpace(writtenFileLength);
         stream.SendBytes(BitConverter.GetBytes(_configurationProvider.GetFreeSpace()));
     }
 }
