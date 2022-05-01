@@ -1,6 +1,7 @@
 ﻿using DistFS.Infrastructure;
 using DistFS.Models;
 using DistFS.Nodes.Clients.Interfaces;
+using DistFS.Tools.Exceptions;
 
 namespace DistFS.Core;
 
@@ -32,25 +33,33 @@ public class NodeManager : INodeManager
 
     public NodeInfo GetBestNode(long requiredSize)
     {
-        var nodeInfo = _context.Nodes.Where(n => n.FreeSpace > requiredSize)
-                                     .OrderByDescending(n => (double)n.FreeSpace / n.Size)
-                                     .First();
+        return GetBestNode(requiredSize, Guid.Empty);
+    }
+
+    public NodeInfo GetBestNode(long requiredSize, Guid except)
+    {
+        var nodeInfo = _context.Nodes.Where(n => n.FreeSpace > requiredSize 
+                                                        && n.Id != except)
+            .OrderByDescending(n => (double)n.FreeSpace / n.Size)
+            .First();
         return nodeInfo;
     }
 
-    public NodeInfo? FindNode(Guid id)
+    public NodeInfo GetNode(Guid id)
     {
-        return _context.Nodes.Find(id);
+        return _context.Nodes.Find(id) 
+               ?? throw new NodeNotFoundException($"Node with ID {id} not found");
     }
 
-    public NodeInfo? FindNode(string name)
+    public NodeInfo GetNode(string name)
     {
-       return _context.Nodes.FirstOrDefault(n => n.Name == name);
+       return _context.Nodes.FirstOrDefault(n => n.Name == name) 
+              ?? throw new NodeNotFoundException($"Node with name {name} not found");
     }
 
     public void UpdateNodeFreeSpace(Guid nodeId, long newSpace)
     {
-        var node = _context.Nodes.Find(nodeId);
+        var node = GetNode(nodeId);
         node.FreeSpace = newSpace;
         _context.Nodes.Update(node);
         _context.SaveChanges();

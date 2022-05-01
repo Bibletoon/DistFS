@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DistFS.Infrastructure;
 
-public class RootDbContext : DbContext
+public sealed class RootDbContext : DbContext
 {
     public DbSet<NodeInfo> Nodes { get; set; }
-    public DbSet<DistFileInfo> DistFiles { get; set; }
+    public DbSet<RemoteFileInfo> RemoteFiles { get; set; }
+    public DbSet<BlockInfo> Blocks { get; set; }
 
     public RootDbContext(DbContextOptions<RootDbContext> options)
         : base(options)
@@ -16,9 +17,9 @@ public class RootDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<DistFileInfo>().HasMany(f => f.Blocks);
-        modelBuilder.Entity<BlockInfo>().HasKey(b => b.BlockName);
-        modelBuilder.Entity<DistFileInfo>().HasKey(df => df.RemotePath);
+        modelBuilder.Entity<RemoteFileInfo>().HasMany(f => f.Blocks);
+        modelBuilder.Entity<BlockInfo>().HasKey(b => b.Name);
+        modelBuilder.Entity<RemoteFileInfo>().HasKey(df => df.RemotePath);
         modelBuilder.Entity<NodeInfo>().HasKey(n => n.Id);
     }
 }

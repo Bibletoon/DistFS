@@ -18,7 +18,7 @@ public class RootRunner
         manager.RegisterNode("Some node", "127.0.0.1", 8081);
         manager.RegisterNode("Other node", "127.0.0.1", 8082);
         manager.RegisterNode("Another node", "127.0.0.1", 8083);
-        var fsManager = provider.GetRequiredService<IFsManager>();
+        var fsManager = provider.GetRequiredService<IFileSystemManager>();
         fsManager.WriteFile("pic.jpg", "kek/lol/pic.jpg");
         // fsManager.ReadFile("kek/lol/pic.jpg", "lol.jpg");
         fsManager.RemoveFile("kek/lol/pic.jpg");
@@ -27,7 +27,7 @@ public class RootRunner
     public void ConfigureServices(ServiceCollection collection)
     {
         collection.AddDbContext<RootDbContext>(o => o.UseSqlite("Filename=root.db"));
-        collection.AddScoped<IFsManager, FsManager>();
+        collection.AddScoped<IFileSystemManager, FileSystemManager>();
         collection.AddScoped<INodeManager, NodeManager>();
         collection.AddScoped<IFileRepository, LocalFileRepository>();
         collection.AddScoped<INodeFileClient, TcpNodeFileClient>();

@@ -3,16 +3,16 @@
 public class BlockInfo
 {
     public int Number { get; private init; }
-    public Guid NodeId { get; private init; }
-    public string BlockName { get; private init; }
+    public Guid NodeId { get; set; }
+    public string Name { get; private init; }
 
     private BlockInfo()
     { }
 
-    public BlockInfo(int number, Guid nodeId, string blockName)
+    public BlockInfo(int number, Guid nodeId, string name)
     {
         Number = number;
         NodeId = nodeId;
-        BlockName = blockName;
+        Name = name;
     }
 }
