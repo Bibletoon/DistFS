@@ -2,7 +2,7 @@
 using DistFS.Tools.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
-namespace DistFS.Infrastructure;
+namespace DistFS.Infrastructure.Database;
 
 public interface IBlockContext
 {

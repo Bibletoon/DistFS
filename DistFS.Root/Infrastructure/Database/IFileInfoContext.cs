@@ -1,7 +1,7 @@
 ﻿using DistFS.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DistFS.Infrastructure;
+namespace DistFS.Infrastructure.Database;
 
 public interface IFileInfoContext
 { 

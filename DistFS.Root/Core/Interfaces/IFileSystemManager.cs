@@ -1,4 +1,4 @@
-﻿namespace DistFS.Core;
+﻿namespace DistFS.Core.Interfaces;
 
 public interface IFileSystemManager
 {

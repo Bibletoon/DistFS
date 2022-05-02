@@ -1,7 +1,7 @@
 ﻿using DistFS.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DistFS.Infrastructure;
+namespace DistFS.Infrastructure.Database;
 
 public sealed class RootDbContext : DbContext, INodeContext, IBlockContext, IFileInfoContext
 {
