@@ -23,21 +23,4 @@ public class NodeBalancer : INodeBalancer
     public void RebalanceNodes()
     {
     }
-
-    public void CleanNode(string name)
-    {
-        ArgumentNullException.ThrowIfNull(name, nameof(name));
-        
-        var node = _nodeContext.Nodes.First(n => n.Name == name);
-
-        var blocks = _blockContext.Blocks.Where(b => b.NodeId == node.Id);
-        foreach (var block in blocks)
-        {
-            var blockData = _fileClient.ReadBlock(node, block.Name);
-            _fileClient.DeleteBlock(node, block.Name);
-            var newNode = _nodeContext.GetBestNode(blockData.Length, block.NodeId);
-            _fileClient.WriteBlock(newNode, block.Name, blockData);
-            _blockContext.UpdateBlockNode(block.Name, newNode.Id);
-        }
-    }
 }
