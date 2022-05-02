@@ -14,7 +14,7 @@ public class RootRunner
         var collection = new ServiceCollection();
         ConfigureServices(collection);
         var provider = collection.BuildServiceProvider();
-        var manager = provider.GetRequiredService<INodeManager>();
+        var manager = provider.GetRequiredService<INodeInfoManager>();
         manager.RegisterNode("Some node", "127.0.0.1", 8081);
         manager.RegisterNode("Other node", "127.0.0.1", 8082);
         manager.RegisterNode("Another node", "127.0.0.1", 8083);
@@ -28,7 +28,7 @@ public class RootRunner
     {
         collection.AddDbContext<RootDbContext>(o => o.UseSqlite("Filename=root.db"));
         collection.AddScoped<IFileSystemManager, FileSystemManager>();
-        collection.AddScoped<INodeManager, NodeManager>();
+        collection.AddScoped<INodeInfoManager, NodeInfoManager>();
         collection.AddScoped<IFileRepository, LocalFileRepository>();
         collection.AddScoped<INodeFileClient, TcpNodeFileClient>();
         collection.AddScoped<INodeInfoClient, TcpNodeInfoClient>();

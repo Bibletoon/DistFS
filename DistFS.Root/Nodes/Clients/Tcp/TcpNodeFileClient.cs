@@ -8,11 +8,11 @@ namespace DistFS.Nodes.Clients.Tcp;
 
 public class TcpNodeFileClient : INodeFileClient
 {
-    private readonly INodeManager _nodeManager;
+    private readonly INodeInfoManager _nodeInfoManager;
 
-    public TcpNodeFileClient(INodeManager nodeManager)
+    public TcpNodeFileClient(INodeInfoManager nodeInfoManager)
     {
-        _nodeManager = nodeManager;
+        _nodeInfoManager = nodeInfoManager;
     }
     
     public void WriteBlock(NodeInfo node, string blockName, byte[] block)
@@ -20,7 +20,7 @@ public class TcpNodeFileClient : INodeFileClient
         var command = new WriteBlockCommand(blockName, block);
         var newFreeSpaceBytes = SendCommandAndReceiveBytes(node, command);
         var newFreeSpace = BitConverter.ToInt64(newFreeSpaceBytes);
-        _nodeManager.UpdateNodeFreeSpace(node.Id, newFreeSpace);
+        _nodeInfoManager.UpdateNodeFreeSpace(node.Id, newFreeSpace);
     }
 
     public byte[] ReadBlock(NodeInfo node, string blockName)
@@ -35,7 +35,7 @@ public class TcpNodeFileClient : INodeFileClient
         var command = new DeleteBlockCommand(blockName);
         var newFreeSpaceBytes = SendCommandAndReceiveBytes(node, command);
         var newFreeSpace = BitConverter.ToInt64(newFreeSpaceBytes);
-        _nodeManager.UpdateNodeFreeSpace(node.Id, newFreeSpace);
+        _nodeInfoManager.UpdateNodeFreeSpace(node.Id, newFreeSpace);
     }
 
     private byte[] SendCommandAndReceiveBytes(NodeInfo node, Command command)

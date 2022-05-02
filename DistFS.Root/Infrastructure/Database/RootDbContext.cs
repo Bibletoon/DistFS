@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DistFS.Infrastructure;
 
-public sealed class RootDbContext : DbContext
+public sealed class RootDbContext : DbContext, INodeContext, IBlockContext, IFileInfoContext
 {
     public DbSet<NodeInfo> Nodes { get; set; }
     public DbSet<RemoteFileInfo> RemoteFiles { get; set; }
