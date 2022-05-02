@@ -11,7 +11,7 @@ public interface IBlockContext
     
     IEnumerable<EnumeratedBlock> EnumerateBlocks()
     {
-        return Blocks.GroupBy(b => b.NodeId)
+        return Blocks.AsEnumerable().GroupBy(b => b.NodeId)
             .SelectMany(g => g.Select((b, n) => new EnumeratedBlock(b, n)))
             .OrderBy(i => i.Number)
             .ThenBy(i => i.Block.NodeId);

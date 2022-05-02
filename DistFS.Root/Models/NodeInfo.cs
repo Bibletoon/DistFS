@@ -20,4 +20,9 @@ public class NodeInfo
         Size = size;
         FreeSpace = freeSpace;
     }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
 }
