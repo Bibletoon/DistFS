@@ -4,14 +4,15 @@ namespace DistFS.Tools;
 
 public class ArraySplitter<T> : IEnumerable<T[]>
 {
+    private const int MinimalBlockSize = 65536;
     private readonly T[] _array;
     private readonly int _blockSize;
     private int _arrayIndex;
 
-    public ArraySplitter(T[] array, int blockSize = 65536)
+    public ArraySplitter(T[] array)
     {
         _array = array;
-        _blockSize = blockSize;
+        _blockSize = (int)Math.Max(MinimalBlockSize, Math.Pow(2, Math.Floor(Math.Log2(array.Length/200))));
     }
 
     public IEnumerator<T[]> GetEnumerator()

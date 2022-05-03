@@ -4,8 +4,8 @@ namespace DistFS.RootClient.Commands;
 
 public class ExecuteCommand : Command
 {
-    private IServiceProvider _serviceProvider;
-    private CommandTypeProvider _commandTypeProvider;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly CommandTypeProvider _commandTypeProvider;
 
     public ExecuteCommand(IServiceProvider serviceProvider, CommandTypeProvider commandTypeProvider)
     {
