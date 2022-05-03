@@ -18,25 +18,29 @@ public class RootRunner
         var collection = new ServiceCollection();
         ConfigureServices(collection);
         var typeProvider = ConfigureCommands(collection);
+        collection.AddSingleton(typeProvider);
         var provider = collection.BuildServiceProvider();
-        while (true)
-        {
-            var commandRequest = Console.ReadLine();
-            var commandName = string.Join("", commandRequest.Split(' ').First().Skip(1));
-            var commandArguments = commandRequest.Split(' ').Skip(1).ToArray();
+        // while (true)
+        // {
+        //     var commandRequest = Console.ReadLine();
+        //     var commandName = string.Join("", commandRequest.Split(' ').First().Skip(1));
+        //     var commandArguments = commandRequest.Split(' ').Skip(1).ToArray();
+        //
+        //     if (commandName == "exit")
+        //         break;
+        //     
+        //     var commandType = typeProvider.GetCommandType(commandName);
+        //     var command = (Command)provider.GetRequiredService(commandType);
+        //     command.Execute(commandArguments);
+        // }
 
-            if (commandName == "exit")
-                break;
-            
-            var commandType = typeProvider.GetCommandType(commandName);
-            var command = (Command)provider.GetRequiredService(commandType);
-            command.Execute(commandArguments);
-        }
+        var command = provider.GetRequiredService<ExecuteCommand>();
+        command.Execute(new [] {"commands.txt"});
     }
 
-    public void ConfigureServices(ServiceCollection collection)
+    private void ConfigureServices(IServiceCollection collection)
     {
-        collection.AddDbContext<RootDbContext>(o => o.UseSqlite("Filename=root.db"));
+        collection.AddDbContext<RootDbContext>(o => o.UseInMemoryDatabase("root.db"));
         collection.AddScoped<INodeContext>(c => c.GetRequiredService<RootDbContext>());
         collection.AddScoped<IFileInfoContext>(c => c.GetRequiredService<RootDbContext>());
         collection.AddScoped<IBlockContext>(c => c.GetRequiredService<RootDbContext>());
@@ -49,7 +53,7 @@ public class RootRunner
         collection.AddSingleton(sp => sp);
     }
 
-    public CommandTypeProvider ConfigureCommands(ServiceCollection collection)
+    private CommandTypeProvider ConfigureCommands(IServiceCollection collection)
     {
         collection
             .AddScoped<AddFileCommand>()
@@ -57,7 +61,8 @@ public class RootRunner
             .AddScoped<BalanceNodesCommand>()
             .AddScoped<CleanNodeCommand>()
             .AddScoped<ReadFileCommand>()
-            .AddScoped<RemoveFileCommand>();
+            .AddScoped<RemoveFileCommand>()
+            .AddScoped<ExecuteCommand>();
 
         var typeProvider = new CommandTypeProvider();
         typeProvider
@@ -66,7 +71,8 @@ public class RootRunner
             .RegisterCommand<BalanceNodesCommand>()
             .RegisterCommand<CleanNodeCommand>()
             .RegisterCommand<ReadFileCommand>()
-            .RegisterCommand<RemoveFileCommand>();
+            .RegisterCommand<RemoveFileCommand>()
+            .RegisterCommand<ExecuteCommand>();
 
         return typeProvider;
     }

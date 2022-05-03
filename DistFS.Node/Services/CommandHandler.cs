@@ -17,6 +17,7 @@ public class CommandHandler : ICommandHandler
 
     public void Accept(Command command, Stream stream)
     {
+        Console.WriteLine($"Accepting {command.GetType().Name}");
         command.AcceptHandler(this, stream);
     }
 

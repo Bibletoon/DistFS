@@ -17,15 +17,17 @@ public class ExecuteCommand : Command
     
     public override void Execute(string[] args)
     {
-        var commandRequest = Console.ReadLine();
-        var commandName = string.Join("", commandRequest.Split(' ').First().Skip(1));
-        var commandArguments = commandRequest.Split(' ').Skip(1).ToArray();
+        foreach (var commandRequest in File.ReadLines(args[0]))
+        {
+            var commandName = string.Join("", commandRequest.Split(' ').First().Skip(1));
+            var commandArguments = commandRequest.Split(' ').Skip(1).ToArray();
 
-        if (commandName == "exit")
-            return;
+            if (commandName == "exit")
+                return;
             
-        var commandType = _commandTypeProvider.GetCommandType(commandName);
-        var command = (Command)_serviceProvider.GetRequiredService(commandType);
-        command.Execute(commandArguments);
+            var commandType = _commandTypeProvider.GetCommandType(commandName);
+            var command = (Command)_serviceProvider.GetRequiredService(commandType);
+            command.Execute(commandArguments);
+        }
     }
 }
