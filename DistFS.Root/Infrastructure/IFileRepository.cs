@@ -4,5 +4,6 @@ public interface IFileRepository
 {
     Stream ReadFile(string path);
     FileInfo GetFileInfo(string path);
-    void WriteFile(string path, ReadOnlySpan<byte> content);
+    void CreateFile(string path);
+    void AppendFileContent(string path, ReadOnlySpan<byte> content);
 }

@@ -53,14 +53,13 @@ public class FileSystemManager : IFileSystemManager
             throw new FileNotFoundException(remotePath);
         }
 
-        var content = new List<byte>();
+        _repository.CreateFile(localPath);
         foreach (var blockInfo in fileInfo.Blocks.OrderBy(b => b.Number))
         {
             var node = _nodeContext.Nodes.Find(blockInfo.NodeId);
             var blockContent = _nodeFileClient.ReadBlock(node, blockInfo.Name);
-            content.AddRange(blockContent);
+            _repository.AppendFileContent(localPath, blockContent);
         }
-        _repository.WriteFile(localPath, content.ToArray());
     }
 
     public void RemoveFile(string remotePath)

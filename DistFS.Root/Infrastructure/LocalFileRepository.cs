@@ -12,9 +12,14 @@ public class LocalFileRepository : IFileRepository
         return new FileInfo(path);
     }
 
-    public void WriteFile(string path, ReadOnlySpan<byte> content)
+    public void CreateFile(string path)
     {
-        var fs = File.Open(path, FileMode.Create);
+        File.Create(path).Close();
+    }
+
+    public void AppendFileContent(string path, ReadOnlySpan<byte> content)
+    {
+        var fs = File.Open(path, FileMode.Append);
         fs.Write(content);
         fs.Close();
     }
