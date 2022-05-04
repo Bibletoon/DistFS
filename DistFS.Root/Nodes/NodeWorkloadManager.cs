@@ -53,8 +53,15 @@ public class NodeWorkloadManager : INodeWorkloadManager
             var currentNode = _nodeContext.Nodes.Find(block.NodeId);
             var blockData = _fileClient.ReadBlock(currentNode, block.Name);
             _fileClient.DeleteBlock(currentNode, block.Name);
-            //TODO: Span
-            blocksToWrite.Add((node, block, blockData.ToArray()));
+            if (node.FreeSpace > blockData.Length)
+            {
+                _fileClient.WriteBlock(node, block.Name, blockData);
+                _blockContext.UpdateBlockNode(block.Name, node.Id);
+            }
+            else
+            {
+                blocksToWrite.Add((node, block, blockData.ToArray()));
+            }
         }
 
         foreach (var (node, block, data) in blocksToWrite)
