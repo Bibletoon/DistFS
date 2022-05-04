@@ -15,9 +15,9 @@ public class TcpNodeFileClient : INodeFileClient
         _nodeManager = nodeManager;
     }
     
-    public void WriteBlock(NodeInfo node, string blockName, byte[] block)
+    public void WriteBlock(NodeInfo node, string blockName, ReadOnlySpan<byte> block)
     {
-        var command = new WriteBlockCommand(blockName, block);
+        var command = new WriteBlockCommand(blockName, block.ToArray());
         var newFreeSpaceBytes = SendCommandAndReceiveBytes(node, command);
         var newFreeSpace = BitConverter.ToInt64(newFreeSpaceBytes);
         _nodeManager.UpdateNodeFreeSpace(node.Id, newFreeSpace);

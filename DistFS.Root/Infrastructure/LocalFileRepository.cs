@@ -2,13 +2,20 @@
 
 public class LocalFileRepository : IFileRepository
 {
-    public byte[] ReadFile(string path)
+    public Stream ReadFile(string path)
     {
-        return File.ReadAllBytes(path);
+        return File.Open(path, FileMode.Open);
     }
 
-    public void WriteFile(string path, byte[] content)
+    public FileInfo GetFileInfo(string path)
     {
-        File.WriteAllBytes(path, content);
+        return new FileInfo(path);
+    }
+
+    public void WriteFile(string path, ReadOnlySpan<byte> content)
+    {
+        var fs = File.Open(path, FileMode.Create);
+        fs.Write(content);
+        fs.Close();
     }
 }

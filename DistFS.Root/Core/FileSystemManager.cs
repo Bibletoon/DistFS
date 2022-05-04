@@ -24,21 +24,24 @@ public class FileSystemManager : IFileSystemManager
 
     public void WriteFile(string localPath, string remotePath)
     {
-        var fileContent = _repository.ReadFile(localPath);
-        var splittedToBlocksArray = new ArraySplitter<byte>(fileContent);
+        var fileInfo = _repository.GetFileInfo(localPath);
+        var fileStream = _repository.ReadFile(localPath);
+        var splittedToBlocksStream = new StreamBlockReader(fileStream, fileInfo.Length);
         var blocks = new List<BlockInfo>();
 
-        foreach (var (block, index) in splittedToBlocksArray.Select((value, i) => (value, i)))
+        int index = 0;
+        while (splittedToBlocksStream.HasNextBlock())
         {
+            var block = splittedToBlocksStream.GetNextBlock();
             var blockName = Guid.NewGuid().ToString();
             var node = _nodeContext.GetBestNode(block.Length);
             _nodeFileClient.WriteBlock(node, blockName, block);
             blocks.Add(new BlockInfo(index, node.Id, blockName, block.Length));
         }
 
-        var fileInfo = new RemoteFileInfo(remotePath, blocks);
+        var remoteFileInfo = new RemoteFileInfo(remotePath, blocks);
         
-        _fileInfoContext.RemoteFiles.Add(fileInfo);
+        _fileInfoContext.RemoteFiles.Add(remoteFileInfo);
         _fileInfoContext.SaveChanges();
     }
 

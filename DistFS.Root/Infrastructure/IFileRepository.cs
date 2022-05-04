@@ -2,6 +2,7 @@
 
 public interface IFileRepository
 {
-    byte[] ReadFile(string path);
-    void WriteFile(string path, byte[] content);
+    Stream ReadFile(string path);
+    FileInfo GetFileInfo(string path);
+    void WriteFile(string path, ReadOnlySpan<byte> content);
 }
