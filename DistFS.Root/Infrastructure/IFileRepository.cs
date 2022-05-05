@@ -2,8 +2,8 @@
 
 public interface IFileRepository
 {
-    Stream ReadFile(string path);
+    Stream OpenFile(string path);
     FileInfo GetFileInfo(string path);
     void CreateFile(string path);
-    void AppendFileContent(string path, byte[] content);
+    Task AppendFileContentAsync(string path, byte[] content);
 }

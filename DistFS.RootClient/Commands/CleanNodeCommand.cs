@@ -13,11 +13,11 @@ public class CleanNodeCommand : Command
 
     public new static string CommandName => "clean-node";
 
-    public override void Execute(string[] args)
+    public override async Task ExecuteAsync(string[] args)
     {
         if (args.Length != 1)
             throw new ArgumentException("Wrong arguments count");
         
-        _manager.CleanNode(args[0]);
+        await _manager.CleanNodeAsync(args[0]);
     }
 }

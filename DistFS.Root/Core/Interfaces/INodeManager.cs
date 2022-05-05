@@ -2,6 +2,6 @@
 
 public interface INodeManager
 {
-    void RegisterNode(string name, string address, int port);
-    void UpdateNodeFreeSpace(Guid nodeId, long newSpace);
+    Task RegisterNodeAsync(string name, string address, int port);
+    Task UpdateNodeFreeSpaceAsync(Guid nodeId, long newSpace);
 }

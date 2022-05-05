@@ -13,13 +13,13 @@ public class AddNodeCommand : Command
 
     public new static string CommandName => "add-node";
 
-    public override void Execute(string[] args)
+    public override async Task ExecuteAsync(string[] args)
     {
         if (args.Length != 2)
             throw new ArgumentException("Wrong command arguments count");
 
         var ip = args[1].Split(':')[0];
         var port = int.Parse(args[1].Split(':')[1]);
-        _nodeManager.RegisterNode(args[0], ip, port);
+        await _nodeManager.RegisterNodeAsync(args[0], ip, port);
     }
 }

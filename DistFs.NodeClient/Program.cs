@@ -5,4 +5,4 @@ using DistFs.Tcp.Common;
 
 var runner = new TcpNodeRunner();
 
-runner.Run();
+await runner.RunAsync();

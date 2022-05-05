@@ -35,7 +35,7 @@ public class RootRunner
         // }
 
         var command = provider.GetRequiredService<ExecuteCommand>();
-        command.Execute(new [] {"commands.txt"});
+        command.ExecuteAsync(new[] { "commands.txt" }).GetAwaiter().GetResult();
     }
 
     private void ConfigureServices(IServiceCollection collection)

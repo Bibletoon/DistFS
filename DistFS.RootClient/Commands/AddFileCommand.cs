@@ -13,11 +13,11 @@ public class AddFileCommand : Command
 
     public new static string CommandName => "add-file";
 
-    public override void Execute(string[] args)
+    public override async Task ExecuteAsync(string[] args)
     {
         if (args.Length != 2)
             throw new ArgumentException("Wrong arguments count");
         
-        _fileSystemManager.WriteFile(args[0], args[1]);
+        await _fileSystemManager.WriteFileAsync(args[0], args[1]);
     }
 }

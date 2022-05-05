@@ -15,7 +15,7 @@ public class ExecuteCommand : Command
 
     public new static string CommandName => "execute-commands";
     
-    public override void Execute(string[] args)
+    public override async Task ExecuteAsync(string[] args)
     {
         foreach (var commandRequest in File.ReadLines(args[0]))
         {
@@ -27,7 +27,7 @@ public class ExecuteCommand : Command
             
             var commandType = _commandTypeProvider.GetCommandType(commandName);
             var command = (Command)_serviceProvider.GetRequiredService(commandType);
-            command.Execute(commandArguments);
+            await command.ExecuteAsync(commandArguments);
         }
     }
 }

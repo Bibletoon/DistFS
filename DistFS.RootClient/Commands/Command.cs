@@ -3,5 +3,5 @@
 public abstract class Command
 {
     public static string CommandName;
-    public abstract void Execute(string[] args);
+    public abstract Task ExecuteAsync(string[] args);
 }

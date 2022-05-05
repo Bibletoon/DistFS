@@ -9,8 +9,8 @@ public class DeleteBlocksCommand : Command
         Blocks = blocks;
     }
 
-    public override void AcceptHandler(ICommandHandler handler, Stream stream)
+    public override async Task AcceptHandler(ICommandHandler handler, Stream stream)
     {
-        handler.Handle(this, stream);
+        await handler.Handle(this, stream);
     }
 }

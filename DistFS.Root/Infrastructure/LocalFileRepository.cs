@@ -2,7 +2,7 @@
 
 public class LocalFileRepository : IFileRepository
 {
-    public Stream ReadFile(string path)
+    public Stream OpenFile(string path)
     {
         return File.Open(path, FileMode.Open);
     }
@@ -17,10 +17,10 @@ public class LocalFileRepository : IFileRepository
         File.Create(path).Close();
     }
 
-    public void AppendFileContent(string path, byte[] content)
+    public async Task AppendFileContentAsync(string path, byte[] content)
     {
         var fs = File.Open(path, FileMode.Append);
-        fs.Write(content);
+        await fs.WriteAsync(content);
         fs.Close();
     }
 }

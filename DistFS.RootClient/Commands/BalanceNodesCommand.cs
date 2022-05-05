@@ -12,8 +12,8 @@ public class BalanceNodesCommand : Command
     }
 
     public new static string CommandName => "balance-nodes";
-    public override void Execute(string[] args)
+    public override async Task ExecuteAsync(string[] args)
     {
-        _manager.RebalanceNodes();
+        await _manager.RebalanceNodesAsync();
     }
 }

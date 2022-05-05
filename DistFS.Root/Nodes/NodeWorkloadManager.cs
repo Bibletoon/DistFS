@@ -1,6 +1,7 @@
 ﻿using DistFS.Infrastructure.Database;
 using DistFS.Models;
 using DistFS.Nodes.Clients.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DistFS.Nodes;
 
@@ -29,11 +30,11 @@ public class NodeWorkloadManager : INodeWorkloadManager
         _blockContext = blockContext;
     }
 
-    public void RebalanceNodes()
+    public async Task RebalanceNodesAsync()
     {
         var nodesMemory = new Dictionary<NodeInfo, NodeMemoryInfo>();
         var enumeratedBlocks = _blockContext.EnumerateBlocks();
-        foreach (var node in _nodeContext.Nodes.ToList())
+        foreach (var node in await _nodeContext.Nodes.ToListAsync())
         {
             nodesMemory[node] = new NodeMemoryInfo(node.Size, node.Size);
         }
@@ -50,12 +51,12 @@ public class NodeWorkloadManager : INodeWorkloadManager
         var blocksToWrite = new List<(NodeInfo, BlockInfo, byte[])>();
         foreach (var (node, block) in blocksToMove)
         {
-            var currentNode = _nodeContext.Nodes.Find(block.NodeId);
-            var blockData = _fileClient.ExtractBlock(currentNode, block.Name);
+            var currentNode = await _nodeContext.Nodes.FindAsync(block.NodeId);
+            var blockData = await _fileClient.ExtractBlockAsync(currentNode, block.Name);
             if (node.FreeSpace > blockData.Length)
             {
-                _fileClient.WriteBlock(node, block.Name, blockData);
-                _blockContext.UpdateBlockNode(block.Name, node.Id);
+                await _fileClient.WriteBlockAsync(node, block.Name, blockData);
+                await _blockContext.UpdateBlockNodeAsync(block.Name, node.Id);
             }
             else
             {
@@ -65,8 +66,8 @@ public class NodeWorkloadManager : INodeWorkloadManager
 
         foreach (var (node, block, data) in blocksToWrite)
         {
-            _fileClient.WriteBlock(node, block.Name, data);
-            _blockContext.UpdateBlockNode(block.Name, node.Id);
+            await _fileClient.WriteBlockAsync(node, block.Name, data);
+            await _blockContext.UpdateBlockNodeAsync(block.Name, node.Id);
         }
     }
 
@@ -80,7 +81,7 @@ public class NodeWorkloadManager : INodeWorkloadManager
                     : (double)n.Value.FreeSpace / n.Value.Size).Key;
     }
     
-    public void CleanNode(string name)
+    public async Task CleanNodeAsync(string name)
     {
         ArgumentNullException.ThrowIfNull(name, nameof(name));
         
@@ -89,10 +90,10 @@ public class NodeWorkloadManager : INodeWorkloadManager
         var blocks = _blockContext.Blocks.Where(b => b.NodeId == node.Id);
         foreach (var block in blocks)
         {
-            var blockData = _fileClient.ExtractBlock(node, block.Name);
-            var newNode = _nodeContext.GetBestNode(blockData.Length, block.NodeId);
-            _fileClient.WriteBlock(newNode, block.Name, blockData);
-            _blockContext.UpdateBlockNode(block.Name, newNode.Id);
+            var blockData = await _fileClient.ExtractBlockAsync(node, block.Name);
+            var newNode = await _nodeContext.GetBestNodeAsync(blockData.Length, block.NodeId);
+            await _fileClient.WriteBlockAsync(newNode, block.Name, blockData);
+            await _blockContext.UpdateBlockNodeAsync(block.Name, newNode.Id);
         }
     }
 }

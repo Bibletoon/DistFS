@@ -4,5 +4,5 @@ namespace DistFS.Nodes.Clients.Interfaces;
 
 public interface INodeInfoClient
 {
-    NodeInfo Connect(string address, int port, string localName);
+    Task<NodeInfo> ConnectAsync(string address, int port, string localName);
 }

@@ -12,11 +12,11 @@ public class RemoveFileCommand : Command
     }
 
     public new static string CommandName => "remove-file";
-    public override void Execute(string[] args)
+    public override async Task ExecuteAsync(string[] args)
     {
         if (args.Length != 1)
             throw new ArgumentException("Wrong arguments count");
         
-        _fileSystemManager.RemoveFile(args[0]);
+        await _fileSystemManager.RemoveFileAsync(args[0]);
     }
 }

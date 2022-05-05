@@ -2,7 +2,7 @@
 
 public interface IFileSystemManager
 {
-    void WriteFile(string localPath, string remotePath);
-    void ReadFile(string remotePath, string localPath);
-    void RemoveFile(string remotePath);
+    Task WriteFileAsync(string localPath, string remotePath);
+    Task ReadFileAsync(string remotePath, string localPath);
+    Task RemoveFileAsync(string remotePath);
 }

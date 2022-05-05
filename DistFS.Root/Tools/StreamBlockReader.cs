@@ -24,18 +24,18 @@ public class StreamBlockReader
         return _index < _length;
     }
 
-    public byte[] GetNextBlock()
+    public async Task<byte[]> GetNextBlockAsync()
     {
         if (_index >= _length)
             throw new Exception("All blocks were already read");
         
         if (_index + _blockSize < _length)
         {
-            _stream.Read(_buffer, 0, _blockSize);
+            await _stream.ReadAsync(_buffer, 0, _blockSize);
         }
         else
         {
-            _stream.Read(_buffer, 0, (int)(_length - _index));
+            await _stream.ReadAsync(_buffer, 0, (int)(_length - _index));
         }
 
         _index += _blockSize;

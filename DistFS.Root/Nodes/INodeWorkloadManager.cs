@@ -2,6 +2,6 @@
 
 public interface INodeWorkloadManager
 {
-    void RebalanceNodes();
-    void CleanNode(string name);
+    Task RebalanceNodesAsync();
+    Task CleanNodeAsync(string name);
 }

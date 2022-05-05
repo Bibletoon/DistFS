@@ -7,7 +7,7 @@ namespace DistFS.Infrastructure.Database;
 public interface IBlockContext
 {
     DbSet<BlockInfo> Blocks { get; set; }
-    int SaveChanges();
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     
     IEnumerable<EnumeratedBlock> EnumerateBlocks()
     {
@@ -17,15 +17,15 @@ public interface IBlockContext
             .ThenBy(i => i.Block.NodeId);
     }
     
-    void UpdateBlockNode(string blockName, Guid nodeId)
+    async Task UpdateBlockNodeAsync(string blockName, Guid nodeId)
     {
-        var block = Blocks.FirstOrDefault(b => b.Name == blockName);
+        var block = await Blocks.FirstOrDefaultAsync(b => b.Name == blockName);
 
         if (block is null)
             throw new BlockNotFoundException($"Block with name ${blockName} not found");
         
         block.NodeId = nodeId;
         Blocks.Update(block);
-        SaveChanges();
+        await SaveChangesAsync();
     }
 }

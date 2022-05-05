@@ -8,13 +8,13 @@ namespace DistFS.Nodes.Clients.Tcp;
 
 public class TcpNodeInfoClient : INodeInfoClient
 {
-    public NodeInfo Connect(string address, int port, string localName)
+    public async Task<NodeInfo> ConnectAsync(string address, int port, string localName)
     {
         var client = new TcpClient();
-        client.Connect(address, port);
+        await client.ConnectAsync(address, port);
         var stream = client.GetStream();
-        stream.SendCommand(new GetNodeConfigurationCommand());
-        var configuration = stream.Accept<NodeConfigurationDto>();
+        await stream.SendCommandAsync(new GetNodeConfigurationCommand());
+        var configuration = await stream.AcceptAsync<NodeConfigurationDto>();
         var nodeInfo = new NodeInfo(
             configuration.Id,
             localName,

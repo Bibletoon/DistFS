@@ -12,11 +12,11 @@ public class ReadFileCommand : Command
     }
 
     public new static string CommandName => "read-file";
-    public override void Execute(string[] args)
+    public override async Task ExecuteAsync(string[] args)
     {
         if (args.Length != 2)
             throw new ArgumentException("Wrong arguments count");
         
-        _fileSystemManager.ReadFile(args[0], args[1]);
+        await _fileSystemManager.ReadFileAsync(args[0], args[1]);
     }
 }

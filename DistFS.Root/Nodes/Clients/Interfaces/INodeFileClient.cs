@@ -4,8 +4,8 @@ namespace DistFS.Nodes.Clients.Interfaces;
 
 public interface INodeFileClient
 {
-    void WriteBlock(NodeInfo node, string blockName, byte[] block);
-    byte[] ReadBlock(NodeInfo node, string blockName);
-    void DeleteBlocks(NodeInfo node, List<string> blocks);
-    byte[] ExtractBlock(NodeInfo node, string blockName);
+    Task WriteBlockAsync(NodeInfo node, string blockName, byte[] block);
+    Task<byte[]> ReadBlockAsync(NodeInfo node, string blockName);
+    Task DeleteBlocksAsync(NodeInfo node, List<string> blocks);
+    Task<byte[]> ExtractBlockAsync(NodeInfo node, string blockName);
 }

@@ -23,32 +23,32 @@ public class FileSystemManager : IFileSystemManager
         _fileInfoContext = fileInfoContext;
     }
 
-    public void WriteFile(string localPath, string remotePath)
+    public async Task WriteFileAsync(string localPath, string remotePath)
     {
         var fileInfo = _repository.GetFileInfo(localPath);
-        var fileStream = _repository.ReadFile(localPath);
+        var fileStream = _repository.OpenFile(localPath);
         var splittedToBlocksStream = new StreamBlockReader(fileStream, fileInfo.Length);
         var blocks = new List<BlockInfo>();
 
         int index = 0;
         while (splittedToBlocksStream.HasNextBlock())
         {
-            var block = splittedToBlocksStream.GetNextBlock();
+            var block = await splittedToBlocksStream.GetNextBlockAsync();
             var blockName = Guid.NewGuid().ToString();
-            var node = _nodeContext.GetBestNode(block.Length);
-            _nodeFileClient.WriteBlock(node, blockName, block);
+            var node = await _nodeContext.GetBestNodeAsync(block.Length);
+            await _nodeFileClient.WriteBlockAsync(node, blockName, block);
             blocks.Add(new BlockInfo(index, node.Id, blockName, block.Length));
         }
 
         var remoteFileInfo = new RemoteFileInfo(remotePath, blocks);
         
         _fileInfoContext.RemoteFiles.Add(remoteFileInfo);
-        _fileInfoContext.SaveChanges();
+        await _fileInfoContext.SaveChangesAsync();
     }
 
-    public void ReadFile(string remotePath, string localPath)
+    public async Task ReadFileAsync(string remotePath, string localPath)
     {
-        var fileInfo = _fileInfoContext.GetFileInfo(remotePath);
+        var fileInfo = await _fileInfoContext.GetFileInfoAsync(remotePath);
         if (fileInfo is null)
         {
             throw new FileNotFoundException(remotePath);
@@ -57,15 +57,15 @@ public class FileSystemManager : IFileSystemManager
         _repository.CreateFile(localPath);
         foreach (var blockInfo in fileInfo.Blocks.OrderBy(b => b.Number))
         {
-            var node = _nodeContext.Nodes.Find(blockInfo.NodeId);
-            var blockContent = _nodeFileClient.ReadBlock(node, blockInfo.Name);
-            _repository.AppendFileContent(localPath, blockContent);
+            var node = await _nodeContext.Nodes.FindAsync(blockInfo.NodeId);
+            var blockContent = await _nodeFileClient.ReadBlockAsync(node, blockInfo.Name);
+            await _repository.AppendFileContentAsync(localPath, blockContent);
         }
     }
 
-    public void RemoveFile(string remotePath)
+    public async Task RemoveFileAsync(string remotePath)
     {
-        var fileInfo = _fileInfoContext.GetFileInfo(remotePath);
+        var fileInfo = await _fileInfoContext.GetFileInfoAsync(remotePath);
         if (fileInfo is null)
         {
             throw new FileNotFoundException(remotePath);
@@ -73,11 +73,11 @@ public class FileSystemManager : IFileSystemManager
 
         foreach (var group in fileInfo.Blocks.GroupBy(b => b.NodeId))
         {
-            var node = _nodeContext.Nodes.Find(group.Key);
-            _nodeFileClient.DeleteBlocks(node, group.Select(g => g.Name).ToList());
+            var node = await _nodeContext.Nodes.FindAsync(group.Key);
+            await _nodeFileClient.DeleteBlocksAsync(node, group.Select(g => g.Name).ToList());
         }
 
         _fileInfoContext.RemoteFiles.Remove(fileInfo);
-        _fileInfoContext.SaveChanges();
+        await _fileInfoContext.SaveChangesAsync();
     }
 }

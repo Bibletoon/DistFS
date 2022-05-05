@@ -15,52 +15,52 @@ public class TcpNodeFileClient : INodeFileClient
         _nodeManager = nodeManager;
     }
     
-    public void WriteBlock(NodeInfo node, string blockName, byte[] block)
+    public async Task WriteBlockAsync(NodeInfo node, string blockName, byte[] block)
     {
         var command = new WriteBlockCommand(blockName, block.ToArray());
-        var newFreeSpaceBytes = SendCommandAndReceiveBytes(node, command);
+        var newFreeSpaceBytes = await SendCommandAndReceiveBytesAsync(node, command);
         var newFreeSpace = BitConverter.ToInt64(newFreeSpaceBytes);
-        _nodeManager.UpdateNodeFreeSpace(node.Id, newFreeSpace);
+        await _nodeManager.UpdateNodeFreeSpaceAsync(node.Id, newFreeSpace);
     }
 
-    public byte[] ReadBlock(NodeInfo node, string blockName)
+    public async Task<byte[]> ReadBlockAsync(NodeInfo node, string blockName)
     {
         var command = new ReadBlockCommand(blockName);
-        var block = SendCommandAndReceiveBytes(node, command);
+        var block = await SendCommandAndReceiveBytesAsync(node, command);
         return block;
     }
 
-    public void DeleteBlocks(NodeInfo node, List<string> blocks)
+    public async Task DeleteBlocksAsync(NodeInfo node, List<string> blocks)
     {
         var command = new DeleteBlocksCommand(blocks);
-        var newFreeSpaceBytes = SendCommandAndReceiveBytes(node, command);
+        var newFreeSpaceBytes = await SendCommandAndReceiveBytesAsync(node, command);
         var newFreeSpace = BitConverter.ToInt64(newFreeSpaceBytes);
-        _nodeManager.UpdateNodeFreeSpace(node.Id, newFreeSpace);
+        await _nodeManager.UpdateNodeFreeSpaceAsync(node.Id, newFreeSpace);
     }
 
-    public byte[] ExtractBlock(NodeInfo node, string blockName)
+    public async Task<byte[]> ExtractBlockAsync(NodeInfo node, string blockName)
     {
         var command = new ExtractBlockCommand(blockName);
         var client = new TcpClient();
-        client.Connect(node.Address, node.Port);
+        await client.ConnectAsync(node.Address, node.Port);
         var stream = client.GetStream();
-        stream.SendCommand(command);
-        var bytes = stream.AcceptBytes();
-        var newFreeSpaceBytes = stream.AcceptBytes();
+        await stream.SendCommandAsync(command);
+        var bytes = await stream.AcceptBytesAsync();
+        var newFreeSpaceBytes = await stream.AcceptBytesAsync();
         var newFreeSpace = BitConverter.ToInt64(newFreeSpaceBytes);
-        _nodeManager.UpdateNodeFreeSpace(node.Id, newFreeSpace);
+        await _nodeManager.UpdateNodeFreeSpaceAsync(node.Id, newFreeSpace);
         stream.Close();
         client.Close();
         return bytes;
     }
 
-    private byte[] SendCommandAndReceiveBytes(NodeInfo node, Command command)
+    private async Task<byte[]> SendCommandAndReceiveBytesAsync(NodeInfo node, Command command)
     {
         var client = new TcpClient();
-        client.Connect(node.Address, node.Port);
+        await client.ConnectAsync(node.Address, node.Port);
         var stream = client.GetStream();
-        stream.SendCommand(command);
-        var bytes = stream.AcceptBytes();
+        await stream.SendCommandAsync(command);
+        var bytes = await stream.AcceptBytesAsync();
         stream.Close();
         client.Close();
         return bytes;

@@ -9,7 +9,7 @@ namespace DistFS.Node;
 
 public class TcpNodeRunner
 {
-    public void Run()
+    public async Task RunAsync()
     {
         var collection = new ServiceCollection();
         ConfigureServices(collection);
@@ -22,11 +22,11 @@ public class TcpNodeRunner
         listener.Start();
         while (true)
         {
-            var client = listener.AcceptTcpClient();
+            var client = await listener.AcceptTcpClientAsync();
             var stream = client.GetStream();
-            var command = stream.AcceptCommand(ctp);
+            var command = await stream.AcceptCommandAsync(ctp);
             var handler = provider.GetRequiredService<ICommandHandler>();
-            handler.Accept(command, stream);
+            await handler.Accept(command, stream);
             stream.Close();
             client.Close();
         }
