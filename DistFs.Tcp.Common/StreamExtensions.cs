@@ -1,7 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Text;
-using System.Text.Unicode;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace DistFs.Tcp.Common;
 
@@ -41,7 +40,7 @@ public static class StreamExtensions
         var commandTypeName = command.GetType().Name;
         var commandTypeNameBytes = Encoding.UTF8.GetBytes(commandTypeName);
         stream.SendBytes(commandTypeNameBytes);
-        var commandBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command));
+        var commandBytes = JsonSerializer.SerializeToUtf8Bytes(command, command.GetType());
         stream.SendBytes(commandBytes);
     }
 
@@ -52,21 +51,20 @@ public static class StreamExtensions
         var commandType = typeProvider.GetCommandType(commandTypeName);
 
         var commandBytes = stream.AcceptBytes();
-        var command = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(commandBytes), commandType);
+        var command = JsonSerializer.Deserialize(commandBytes, commandType);
         return (Command)command;
     }
 
     public static T Accept<T>(this Stream stream)
     {
         var objectBytes = stream.AcceptBytes();
-        var objectString = Encoding.UTF8.GetString(objectBytes);
-        var obj = JsonConvert.DeserializeObject<T>(objectString);
+        var obj = JsonSerializer.Deserialize<T>(objectBytes);
 
         return obj;
     }
 
     public static void Send<T>(this Stream stream, T obj)
     {
-        stream.SendBytes(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj)));
+        stream.SendBytes(JsonSerializer.SerializeToUtf8Bytes(obj, obj.GetType()));
     }
 }

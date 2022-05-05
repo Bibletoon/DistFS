@@ -2,7 +2,6 @@
 using DistFS.Node.Tools.Exceptions;
 using DistFs.Tcp.Common.NodeAbstractions;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 
 namespace DistFS.Node;
 
@@ -19,7 +18,7 @@ public class NodeConfigurationProvider : INodeConfigurationProvider
         }
         
         _configurationInfo = 
-            JsonConvert.DeserializeObject<NodeConfigurationInfo>(File.ReadAllText(ConfigFileName))
+            JsonSerializer.Deserialize<NodeConfigurationInfo>(File.ReadAllText(ConfigFileName))
             ?? throw new NodeConfigurationException("Wrong configuration format");
     }
     
@@ -31,13 +30,13 @@ public class NodeConfigurationProvider : INodeConfigurationProvider
     public void IncreaseFreeSpace(long space)
     {
         _configurationInfo.FreeSpace += space;
-        File.WriteAllText(ConfigFileName, JsonConvert.SerializeObject(_configurationInfo));
+        File.WriteAllText(ConfigFileName, JsonSerializer.Serialize(_configurationInfo));
     }
 
     public void DecreaseFreeSpace(long space)
     {
         _configurationInfo.FreeSpace -= space;
-        File.WriteAllText(ConfigFileName, JsonConvert.SerializeObject(_configurationInfo));
+        File.WriteAllText(ConfigFileName, JsonSerializer.Serialize(_configurationInfo));
     }
 
     public long GetFreeSpace()

@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace DistFs.Tcp.Common;
+﻿namespace DistFs.Tcp.Common;
 
 public class DeleteBlockCommand : Command
 {
