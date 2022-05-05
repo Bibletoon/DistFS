@@ -51,8 +51,7 @@ public class NodeWorkloadManager : INodeWorkloadManager
         foreach (var (node, block) in blocksToMove)
         {
             var currentNode = _nodeContext.Nodes.Find(block.NodeId);
-            var blockData = _fileClient.ReadBlock(currentNode, block.Name);
-            _fileClient.DeleteBlock(currentNode, block.Name);
+            var blockData = _fileClient.ExtractBlock(currentNode, block.Name);
             if (node.FreeSpace > blockData.Length)
             {
                 _fileClient.WriteBlock(node, block.Name, blockData);
@@ -90,8 +89,7 @@ public class NodeWorkloadManager : INodeWorkloadManager
         var blocks = _blockContext.Blocks.Where(b => b.NodeId == node.Id);
         foreach (var block in blocks)
         {
-            var blockData = _fileClient.ReadBlock(node, block.Name);
-            _fileClient.DeleteBlock(node, block.Name);
+            var blockData = _fileClient.ExtractBlock(node, block.Name);
             var newNode = _nodeContext.GetBestNode(blockData.Length, block.NodeId);
             _fileClient.WriteBlock(newNode, block.Name, blockData);
             _blockContext.UpdateBlockNode(block.Name, newNode.Id);

@@ -9,4 +9,5 @@ public interface ICommandHandler
     void Handle(GetNodeConfigurationCommand command, Stream stream);
     void Handle(ReadBlockCommand command, Stream stream);
     void Handle(WriteBlockCommand command, Stream stream);
+    void Handle(ExtractBlockCommand command, Stream stream);
 }

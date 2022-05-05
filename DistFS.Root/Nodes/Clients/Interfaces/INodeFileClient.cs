@@ -7,4 +7,5 @@ public interface INodeFileClient
     void WriteBlock(NodeInfo node, string blockName, ReadOnlySpan<byte> block);
     ReadOnlySpan<byte> ReadBlock(NodeInfo node, string blockName);
     void DeleteBlock(NodeInfo node, string blockName);
+    ReadOnlySpan<byte> ExtractBlock(NodeInfo node, string blockName);
 }

@@ -38,6 +38,22 @@ public class TcpNodeFileClient : INodeFileClient
         _nodeManager.UpdateNodeFreeSpace(node.Id, newFreeSpace);
     }
 
+    public ReadOnlySpan<byte> ExtractBlock(NodeInfo node, string blockName)
+    {
+        var command = new ExtractBlockCommand(blockName);
+        var client = new TcpClient();
+        client.Connect(node.Address, node.Port);
+        var stream = client.GetStream();
+        stream.SendCommand(command);
+        var bytes = stream.AcceptBytes();
+        var newFreeSpaceBytes = stream.AcceptBytes();
+        var newFreeSpace = BitConverter.ToInt64(newFreeSpaceBytes);
+        _nodeManager.UpdateNodeFreeSpace(node.Id, newFreeSpace);
+        stream.Close();
+        client.Close();
+        return bytes;
+    }
+
     private ReadOnlySpan<byte> SendCommandAndReceiveBytes(NodeInfo node, Command command)
     {
         var client = new TcpClient();

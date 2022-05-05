@@ -45,7 +45,8 @@ public class TcpNodeRunner
         ctp.RegisterCommand<DeleteBlockCommand>()
             .RegisterCommand<GetNodeConfigurationCommand>()
             .RegisterCommand<ReadBlockCommand>()
-            .RegisterCommand<WriteBlockCommand>();
+            .RegisterCommand<WriteBlockCommand>()
+            .RegisterCommand<ExtractBlockCommand>();
         return ctp;
     }
 }

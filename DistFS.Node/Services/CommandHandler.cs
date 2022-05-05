@@ -47,4 +47,13 @@ public class CommandHandler : ICommandHandler
         _configurationProvider.DecreaseFreeSpace(writtenFileLength);
         stream.SendBytes(BitConverter.GetBytes(_configurationProvider.GetFreeSpace()));
     }
+
+    public void Handle(ExtractBlockCommand command, Stream stream)
+    {
+        var block = _repository.ReadFile(command.BlockName);
+        var deletedFileSize = _repository.RemoveFile(command.BlockName);
+        _configurationProvider.IncreaseFreeSpace(deletedFileSize);
+        stream.SendBytes(block);
+        stream.SendBytes(BitConverter.GetBytes(_configurationProvider.GetFreeSpace()));
+    }
 }
