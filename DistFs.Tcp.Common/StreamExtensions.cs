@@ -6,7 +6,7 @@ namespace DistFs.Tcp.Common;
 
 public static class StreamExtensions
 {
-    public static ReadOnlySpan<byte> AcceptBytes(this Stream stream)
+    public static byte[] AcceptBytes(this Stream stream)
     {
         byte[] buffer = new byte[512];
         var bytesRead = 0;
@@ -26,10 +26,10 @@ public static class StreamExtensions
             bytesRemaining -= bytesRead;
         }
 
-        return data.ToArray().AsSpan();
+        return data.ToArray();
     }
 
-    public static void SendBytes(this Stream stream, ReadOnlySpan<byte> array)
+    public static void SendBytes(this Stream stream, byte[] array)
     {
         stream.Write(BitConverter.GetBytes(array.Length), 0, 4);
         stream.Write(array);

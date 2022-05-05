@@ -17,7 +17,7 @@ public class LocalFileRepository : IFileRepository
         File.Create(path).Close();
     }
 
-    public void AppendFileContent(string path, ReadOnlySpan<byte> content)
+    public void AppendFileContent(string path, byte[] content)
     {
         var fs = File.Open(path, FileMode.Append);
         fs.Write(content);

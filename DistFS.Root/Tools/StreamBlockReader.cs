@@ -24,7 +24,7 @@ public class StreamBlockReader
         return _index < _length;
     }
 
-    public ReadOnlySpan<byte> GetNextBlock()
+    public byte[] GetNextBlock()
     {
         if (_index >= _length)
             throw new Exception("All blocks were already read");
@@ -39,6 +39,6 @@ public class StreamBlockReader
         }
 
         _index += _blockSize;
-        return _buffer.AsSpan();
+        return _buffer;
     }
 }
