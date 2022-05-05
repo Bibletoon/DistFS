@@ -1,4 +1,5 @@
-﻿using DistFS.Core.Interfaces;
+﻿using System.Text.RegularExpressions;
+using DistFS.Core.Interfaces;
 using DistFS.Infrastructure;
 using DistFS.Infrastructure.Database;
 using DistFS.Models;
@@ -70,10 +71,10 @@ public class FileSystemManager : IFileSystemManager
             throw new FileNotFoundException(remotePath);
         }
 
-        foreach (var blockInfo in fileInfo.Blocks.OrderBy(b => b.Number))
+        foreach (var group in fileInfo.Blocks.GroupBy(b => b.NodeId))
         {
-            var node = _nodeContext.Nodes.Find(blockInfo.NodeId);
-            _nodeFileClient.DeleteBlock(node, blockInfo.Name);
+            var node = _nodeContext.Nodes.Find(group.Key);
+            _nodeFileClient.DeleteBlocks(node, group.Select(g => g.Name).ToList());
         }
 
         _fileInfoContext.RemoteFiles.Remove(fileInfo);

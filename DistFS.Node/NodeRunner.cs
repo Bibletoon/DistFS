@@ -42,7 +42,7 @@ public class TcpNodeRunner
     private static CommandTypeProvider BuildCommandTypeProvider()
     {
         var ctp = new CommandTypeProvider();
-        ctp.RegisterCommand<DeleteBlockCommand>()
+        ctp.RegisterCommand<DeleteBlocksCommand>()
             .RegisterCommand<GetNodeConfigurationCommand>()
             .RegisterCommand<ReadBlockCommand>()
             .RegisterCommand<WriteBlockCommand>()

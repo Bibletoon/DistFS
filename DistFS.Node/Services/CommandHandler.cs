@@ -21,9 +21,13 @@ public class CommandHandler : ICommandHandler
         command.AcceptHandler(this, stream);
     }
 
-    public void Handle(DeleteBlockCommand command, Stream stream)
+    public void Handle(DeleteBlocksCommand command, Stream stream)
     {
-        var deletedFileLength = _repository.RemoveFile(command.BlockName);
+        long deletedFileLength = 0;
+        foreach (var block in command.Blocks)
+        {
+            deletedFileLength += _repository.RemoveFile(block);
+        }
         _configurationProvider.IncreaseFreeSpace(deletedFileLength);
         stream.SendBytes(BitConverter.GetBytes(_configurationProvider.GetFreeSpace()));
     }

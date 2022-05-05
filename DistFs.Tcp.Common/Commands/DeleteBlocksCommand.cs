@@ -1,12 +1,12 @@
 ﻿namespace DistFs.Tcp.Common;
 
-public class DeleteBlockCommand : Command
+public class DeleteBlocksCommand : Command
 {
-    public string BlockName { get; init; }
+    public List<string> Blocks { get; init; }
  
-    public DeleteBlockCommand(string blockName)
+    public DeleteBlocksCommand(List<string> blocks)
     {
-        BlockName = blockName;
+        Blocks = blocks;
     }
 
     public override void AcceptHandler(ICommandHandler handler, Stream stream)

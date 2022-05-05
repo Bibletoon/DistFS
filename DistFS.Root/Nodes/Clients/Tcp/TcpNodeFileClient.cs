@@ -30,9 +30,9 @@ public class TcpNodeFileClient : INodeFileClient
         return block;
     }
 
-    public void DeleteBlock(NodeInfo node, string blockName)
+    public void DeleteBlocks(NodeInfo node, List<string> blocks)
     {
-        var command = new DeleteBlockCommand(blockName);
+        var command = new DeleteBlocksCommand(blocks);
         var newFreeSpaceBytes = SendCommandAndReceiveBytes(node, command);
         var newFreeSpace = BitConverter.ToInt64(newFreeSpaceBytes);
         _nodeManager.UpdateNodeFreeSpace(node.Id, newFreeSpace);
