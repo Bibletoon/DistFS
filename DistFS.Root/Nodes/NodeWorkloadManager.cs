@@ -59,7 +59,7 @@ public class NodeWorkloadManager : INodeWorkloadManager
             }
             else
             {
-                blocksToWrite.Add((node, block, blockData.ToArray()));
+                blocksToWrite.Add((node, block, blockData));
             }
         }
 

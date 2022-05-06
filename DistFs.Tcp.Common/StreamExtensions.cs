@@ -18,15 +18,17 @@ public static class StreamExtensions
         }
 
         var bytesRemaining = BitConverter.ToInt32(buffer);
-
-        var data = new List<byte>();
+        var arrayIndex = 0;
+        
+        var data = new byte[bytesRemaining];
         while (bytesRemaining > 0 && (bytesRead = stream.Read(buffer, 0, Math.Min(buffer.Length, bytesRemaining))) != 0)
         {
-            data.AddRange(buffer.Take(bytesRead));
+            Array.Copy(buffer, 0, data, arrayIndex, bytesRead);
             bytesRemaining -= bytesRead;
+            arrayIndex += bytesRead;
         }
 
-        return data.ToArray();
+        return data;
     }
 
     public static void SendBytes(this Stream stream, byte[] array)
