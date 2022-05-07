@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System.Buffers;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 
@@ -8,7 +9,7 @@ public static class StreamExtensions
 {
     public static byte[] AcceptBytes(this Stream stream)
     {
-        byte[] buffer = new byte[512];
+        var buffer = ArrayPool<byte>.Shared.Rent(512);
         var bytesRead = 0;
 
         var headerRead = 0;
@@ -28,6 +29,7 @@ public static class StreamExtensions
             arrayIndex += bytesRead;
         }
 
+        ArrayPool<byte>.Shared.Return(buffer);
         return data;
     }
 
