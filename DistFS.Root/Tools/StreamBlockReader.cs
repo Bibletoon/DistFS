@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace DistFS.Tools;
+﻿namespace DistFS.Tools;
 
 public class StreamBlockReader
 {
