@@ -20,22 +20,19 @@ public class RootRunner
         var typeProvider = ConfigureCommands(collection);
         collection.AddSingleton(typeProvider);
         var provider = collection.BuildServiceProvider();
-        // while (true)
-        // {
-        //     var commandRequest = Console.ReadLine();
-        //     var commandName = string.Join("", commandRequest.Split(' ').First().Skip(1));
-        //     var commandArguments = commandRequest.Split(' ').Skip(1).ToArray();
-        //
-        //     if (commandName == "exit")
-        //         break;
-        //     
-        //     var commandType = typeProvider.GetCommandType(commandName);
-        //     var command = (Command)provider.GetRequiredService(commandType);
-        //     command.Execute(commandArguments);
-        // }
-
-        var command = provider.GetRequiredService<ExecuteCommand>();
-        command.Execute(new [] {"commands.txt"});
+        while (true)
+        {
+            var commandRequest = Console.ReadLine();
+            var commandName = string.Join("", commandRequest.Split(' ').First()[1..]);
+            var commandArguments = commandRequest.Split(' ').Skip(1).ToArray();
+        
+            if (commandName is "exit" or "")
+                break;
+            
+            var commandType = typeProvider.GetCommandType(commandName);
+            var command = (Command)provider.GetRequiredService(commandType);
+            command.Execute(commandArguments);
+        }
     }
 
     private void ConfigureServices(IServiceCollection collection)
