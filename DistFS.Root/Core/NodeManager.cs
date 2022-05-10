@@ -34,7 +34,7 @@ public class NodeManager : INodeManager
 
     public void UpdateNodeFreeSpace(Guid nodeId, long newSpace)
     {
-        var node = _nodeContext.Nodes.Find(nodeId);
+        var node = _nodeContext.Nodes.First(n => n.Id == nodeId);
         node.FreeSpace = newSpace;
         _nodeContext.Nodes.Update(node);
         _nodeContext.SaveChanges();

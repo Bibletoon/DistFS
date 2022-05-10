@@ -4,6 +4,7 @@ using DistFS.Infrastructure.Database;
 using DistFS.Models;
 using DistFS.Nodes.Clients.Interfaces;
 using DistFS.Tools;
+using DistFS.Tools.Exceptions;
 
 namespace DistFS.Core;
 
@@ -24,6 +25,9 @@ public class FileSystemManager : IFileSystemManager
 
     public void WriteFile(string localPath, string remotePath)
     {
+        if (_fileInfoContext.RemoteFiles.Any(f => f.RemotePath == remotePath))
+            throw new FileAlreadyExistsException($"File {remotePath} already exists");
+        
         var fileInfo = _repository.GetFileInfo(localPath);
         var fileStream = _repository.ReadFile(localPath);
         var splittedToBlocksStream = new StreamBlockReader(fileStream, fileInfo.Length);
@@ -48,10 +52,6 @@ public class FileSystemManager : IFileSystemManager
     public void ReadFile(string remotePath, string localPath)
     {
         var fileInfo = _fileInfoContext.GetFileInfo(remotePath);
-        if (fileInfo is null)
-        {
-            throw new FileNotFoundException(remotePath);
-        }
 
         _repository.CreateFile(localPath);
         foreach (var blockInfo in fileInfo.Blocks.OrderBy(b => b.Number))
@@ -65,14 +65,10 @@ public class FileSystemManager : IFileSystemManager
     public void RemoveFile(string remotePath)
     {
         var fileInfo = _fileInfoContext.GetFileInfo(remotePath);
-        if (fileInfo is null)
-        {
-            throw new FileNotFoundException(remotePath);
-        }
 
         foreach (var group in fileInfo.Blocks.GroupBy(b => b.NodeId))
         {
-            var node = _nodeContext.Nodes.Find(group.Key);
+            var node = _nodeContext.Nodes.First(n => n.Id == group.Key);
             _nodeFileClient.DeleteBlocks(node, group.Select(g => g.Name).ToList());
         }
 

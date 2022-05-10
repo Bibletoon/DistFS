@@ -33,7 +33,7 @@ public class NodeWorkloadManager : INodeWorkloadManager
     {
         var nodesMemory = new Dictionary<NodeInfo, NodeMemoryInfo>();
         var enumeratedBlocks = _blockContext.EnumerateBlocks();
-        foreach (var node in _nodeContext.Nodes.ToList())
+        foreach (var node in _nodeContext.Nodes)
         {
             nodesMemory[node] = new NodeMemoryInfo(node.Size, node.Size);
         }
