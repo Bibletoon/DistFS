@@ -3,6 +3,7 @@ using DistFS.Core.Interfaces;
 using DistFS.Models;
 using DistFS.Nodes.Clients.Interfaces;
 using DistFs.Tcp.Common;
+using DistFs.Tcp.Common.Commands;
 
 namespace DistFS.Nodes.Clients.Tcp;
 

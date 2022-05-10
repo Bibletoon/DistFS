@@ -1,9 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using DistFS.Models;
-using DistFS.Nodes.Clients.Tcp;
-using DistFS.RootClient;
-using Microsoft.Extensions.DependencyInjection;
+namespace DistFS.RootClient;
 
 public static class Program
 {

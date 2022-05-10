@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace DistFs.Tcp.Common;
+﻿namespace DistFs.Tcp.Common.Commands;
 
 public class WriteBlockCommand : Command
 {

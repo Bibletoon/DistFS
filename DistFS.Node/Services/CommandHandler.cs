@@ -1,8 +1,9 @@
-﻿using DistFs.Tcp.Common;
+﻿using DistFS.Node.Services.Interfaces;
+using DistFs.Tcp.Common;
+using DistFs.Tcp.Common.Commands;
 using DistFs.Tcp.Common.Dto;
-using DistFs.Tcp.Common.NodeAbstractions;
 
-namespace DistFS.Node;
+namespace DistFS.Node.Services;
 
 public class CommandHandler : ICommandHandler
 {

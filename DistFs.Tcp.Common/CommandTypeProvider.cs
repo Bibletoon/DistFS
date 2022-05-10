@@ -1,4 +1,6 @@
-﻿namespace DistFs.Tcp.Common;
+﻿using DistFs.Tcp.Common.Commands;
+
+namespace DistFs.Tcp.Common;
 
 public class CommandTypeProvider
 {

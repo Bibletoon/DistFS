@@ -1,6 +1,6 @@
-﻿using DistFs.Tcp.Common.NodeAbstractions;
+﻿using DistFS.Node.Services.Interfaces;
 
-namespace DistFS.Node;
+namespace DistFS.Node.Services;
 
 public class LocalNodeRepository : INodeRepository
 {

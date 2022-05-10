@@ -1,4 +1,4 @@
-﻿namespace DistFs.Tcp.Common;
+﻿namespace DistFs.Tcp.Common.Commands;
 
 public class GetNodeConfigurationCommand : Command
 {

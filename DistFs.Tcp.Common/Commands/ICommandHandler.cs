@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-
-namespace DistFs.Tcp.Common;
+﻿namespace DistFs.Tcp.Common.Commands;
 
 public interface ICommandHandler
 {

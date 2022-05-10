@@ -1,9 +1,8 @@
 ﻿using System.Text.Json;
+using DistFS.Node.Services.Interfaces;
 using DistFS.Node.Tools.Exceptions;
-using DistFs.Tcp.Common.NodeAbstractions;
-using Microsoft.Extensions.Configuration;
 
-namespace DistFS.Node;
+namespace DistFS.Node.Services;
 
 public class NodeConfigurationProvider : INodeConfigurationProvider
 {

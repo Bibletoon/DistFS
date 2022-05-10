@@ -1,4 +1,4 @@
-﻿namespace DistFs.Tcp.Common.NodeAbstractions;
+﻿namespace DistFS.Node.Services.Interfaces;
 
 public interface INodeConfigurationProvider
 {

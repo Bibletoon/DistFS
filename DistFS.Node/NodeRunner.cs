@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.Design;
 using System.Net;
 using System.Net.Sockets;
+using DistFS.Node.Services;
+using DistFS.Node.Services.Interfaces;
 using DistFs.Tcp.Common;
-using DistFs.Tcp.Common.NodeAbstractions;
+using DistFs.Tcp.Common.Commands;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DistFS.Node;
